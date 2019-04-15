@@ -1,6 +1,8 @@
 const { ApolloServer, gql } = require('apollo-server-express');
 const express = require('express');
 
+const app = express();
+
 // =======================================================================================
 // graphql
 // =======================================================================================
@@ -27,17 +29,14 @@ const resolvers = { Query: { books: () => books } };
 
 const apolloServer = new ApolloServer({ typeDefs, resolvers });
 // apolloServer.listen().then(({ url }) => {console.log(`🚀  Server ready at ${url}`);});
+apolloServer.applyMiddleware({ app });
 
 // =======================================================================================
 // express
 // =======================================================================================
-const app = express();
-
-apolloServer.applyMiddleware({ app });
-
 app.get('/', (_req, res, _next) => res.send('OK'));
 
 app.listen(3000, () => {
     console.log(`express listening on port 3000...`);
-    console.log(`graphql available at http://localhost:3000${apolloServer.graphqlPath}`);
+    console.log(`graphql available at ${apolloServer.graphqlPath}...`);
 });
